@@ -413,6 +413,183 @@
             33% { transform: translateY(-30px) rotate(120deg); }
             66% { transform: translateY(30px) rotate(240deg); }
         }
+
+        .pomodoro-container {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .pomodoro-container h2 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .timer-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ff6b6b 0deg, rgba(255, 255, 255, 0.2) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-progress {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ff6b6b 0deg, rgba(255, 255, 255, 0.2) 0deg);
+            transition: background 0.1s ease;
+        }
+
+        .timer-display {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            width: 160px;
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer-time {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .timer-session {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .timer-btn {
+            min-width: 120px;
+            font-size: 1rem;
+        }
+
+        .pomodoro-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .session-history {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .session-history h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item-pomodoro {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .history-item-pomodoro:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .session-type {
+            font-weight: 600;
+        }
+
+        .session-time {
+            opacity: 0.8;
+            font-size: 0.8rem;
+        }
+
+        .work-session {
+            border-left: 3px solid #4caf50;
+        }
+
+        .break-session {
+            border-left: 3px solid #2196f3;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .timer-active .timer-circle {
+            animation: timerPulse 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -448,6 +625,7 @@
         <button class="btn" onclick="showGreeting()">인사말 보기</button>
         <button class="btn" onclick="changeTheme()">테마 변경</button>
         <button class="btn" onclick="toggleGame()">🎮 게임 시작</button>
+        <button class="btn" onclick="togglePomodoro()">🍅 포모도로 타이머</button>
         
         <div class="game-container" id="gameContainer" style="display: none;">
             <h2>🎯 숫자 맞추기 게임</h2>
@@ -463,6 +641,45 @@
             <div class="game-feedback" id="gameFeedback"></div>
             <div class="game-history" id="gameHistory"></div>
             <button class="btn restart-btn" onclick="restartGame()" style="display: none;" id="restartBtn">🔄 다시 시작</button>
+        </div>
+
+        <div class="pomodoro-container" id="pomodoroContainer" style="display: none;">
+            <h2>🍅 포모도로 타이머</h2>
+            <p>집중력 향상을 위한 25분 작업 + 5분 휴식 타이머</p>
+            
+            <div class="timer-circle">
+                <div class="timer-progress" id="timerProgress"></div>
+                <div class="timer-display">
+                    <div class="timer-time" id="timerTime">25:00</div>
+                    <div class="timer-session" id="timerSession">작업 시간</div>
+                </div>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="btn timer-btn" id="startPauseBtn" onclick="toggleTimer()">▶️ 시작</button>
+                <button class="btn timer-btn" onclick="resetTimer()">🔄 리셋</button>
+                <button class="btn timer-btn" onclick="skipSession()">⏭️ 건너뛰기</button>
+            </div>
+            
+            <div class="pomodoro-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="completedSessions">0</span>
+                    <span class="stat-label">완료된 세션</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="totalTime">0</span>
+                    <span class="stat-label">총 집중 시간(분)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="streakCount">0</span>
+                    <span class="stat-label">연속 세션</span>
+                </div>
+            </div>
+            
+            <div class="session-history" id="sessionHistory">
+                <h3>오늘의 세션 기록</h3>
+                <div class="history-list" id="historyList"></div>
+            </div>
         </div>
         
         <div class="quote" id="quote">
@@ -489,6 +706,25 @@
             attempts: 0,
             score: 100,
             guessHistory: []
+        };
+
+        let pomodoroState = {
+            isActive: false,
+            isPaused: false,
+            currentSession: 'work',
+            timeLeft: 25 * 60,
+            totalTime: 25 * 60,
+            completedSessions: 0,
+            totalFocusTime: 0,
+            streakCount: 0,
+            sessions: [],
+            interval: null
+        };
+
+        const pomodoroSettings = {
+            work: 25 * 60,
+            shortBreak: 5 * 60,
+            longBreak: 15 * 60
         };
         
         function getRandomItem(array) {
@@ -637,6 +873,304 @@
         function restartGame() {
             startNewGame();
         }
+
+        function togglePomodoro() {
+            const pomodoroContainer = document.getElementById('pomodoroContainer');
+            const button = document.querySelector('button[onclick="togglePomodoro()"]');
+            
+            if (pomodoroContainer.style.display === 'none') {
+                pomodoroContainer.style.display = 'block';
+                button.textContent = '🍅 타이머 닫기';
+                initializePomodoro();
+            } else {
+                pomodoroContainer.style.display = 'none';
+                button.textContent = '🍅 포모도로 타이머';
+                if (pomodoroState.interval) {
+                    clearInterval(pomodoroState.interval);
+                    pomodoroState.interval = null;
+                }
+            }
+        }
+
+        function initializePomodoro() {
+            resetTimer();
+            updateTimerDisplay();
+            updateStats();
+            loadSessionHistory();
+        }
+
+        function toggleTimer() {
+            const button = document.getElementById('startPauseBtn');
+            const container = document.getElementById('pomodoroContainer');
+            
+            if (!pomodoroState.isActive) {
+                startTimer();
+                button.textContent = '⏸️ 일시정지';
+                container.classList.add('timer-active');
+            } else {
+                pauseTimer();
+                button.textContent = '▶️ 시작';
+                container.classList.remove('timer-active');
+            }
+        }
+
+        function startTimer() {
+            pomodoroState.isActive = true;
+            pomodoroState.isPaused = false;
+            
+            pomodoroState.interval = setInterval(() => {
+                pomodoroState.timeLeft--;
+                updateTimerDisplay();
+                updateProgress();
+                
+                if (pomodoroState.timeLeft <= 0) {
+                    completeSession();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            pomodoroState.isActive = false;
+            pomodoroState.isPaused = true;
+            
+            if (pomodoroState.interval) {
+                clearInterval(pomodoroState.interval);
+                pomodoroState.interval = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            pomodoroState.currentSession = 'work';
+            pomodoroState.timeLeft = pomodoroSettings.work;
+            pomodoroState.totalTime = pomodoroSettings.work;
+            
+            const button = document.getElementById('startPauseBtn');
+            const container = document.getElementById('pomodoroContainer');
+            button.textContent = '▶️ 시작';
+            container.classList.remove('timer-active');
+            
+            updateTimerDisplay();
+            updateProgress();
+        }
+
+        function skipSession() {
+            if (pomodoroState.isActive) {
+                completeSession();
+            } else {
+                switchSession();
+            }
+        }
+
+        function completeSession() {
+            pauseTimer();
+            
+            const sessionType = pomodoroState.currentSession;
+            const now = new Date();
+            
+            if (sessionType === 'work') {
+                pomodoroState.completedSessions++;
+                pomodoroState.totalFocusTime += 25;
+                pomodoroState.streakCount++;
+            }
+            
+            addSessionToHistory(sessionType, now);
+            updateStats();
+            
+            playNotificationSound();
+            showSessionCompleteNotification(sessionType);
+            
+            setTimeout(() => {
+                switchSession();
+            }, 2000);
+        }
+
+        function switchSession() {
+            if (pomodoroState.currentSession === 'work') {
+                const sessionsCompleted = pomodoroState.completedSessions;
+                if (sessionsCompleted > 0 && sessionsCompleted % 4 === 0) {
+                    pomodoroState.currentSession = 'longBreak';
+                    pomodoroState.timeLeft = pomodoroSettings.longBreak;
+                    pomodoroState.totalTime = pomodoroSettings.longBreak;
+                } else {
+                    pomodoroState.currentSession = 'shortBreak';
+                    pomodoroState.timeLeft = pomodoroSettings.shortBreak;
+                    pomodoroState.totalTime = pomodoroSettings.shortBreak;
+                }
+            } else {
+                pomodoroState.currentSession = 'work';
+                pomodoroState.timeLeft = pomodoroSettings.work;
+                pomodoroState.totalTime = pomodoroSettings.work;
+            }
+            
+            updateTimerDisplay();
+            updateProgress();
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay() {
+            const timeElement = document.getElementById('timerTime');
+            const sessionElement = document.getElementById('timerSession');
+            
+            timeElement.textContent = formatTime(pomodoroState.timeLeft);
+            
+            const sessionLabels = {
+                work: '작업 시간',
+                shortBreak: '짧은 휴식',
+                longBreak: '긴 휴식'
+            };
+            
+            sessionElement.textContent = sessionLabels[pomodoroState.currentSession];
+        }
+
+        function updateProgress() {
+            const progressElement = document.getElementById('timerProgress');
+            const percentage = ((pomodoroState.totalTime - pomodoroState.timeLeft) / pomodoroState.totalTime) * 100;
+            const degrees = (percentage / 100) * 360;
+            
+            const colors = {
+                work: '#ff6b6b',
+                shortBreak: '#2196f3',
+                longBreak: '#4caf50'
+            };
+            
+            const color = colors[pomodoroState.currentSession];
+            progressElement.style.background = `conic-gradient(from 0deg, ${color} ${degrees}deg, rgba(255, 255, 255, 0.2) ${degrees}deg)`;
+        }
+
+        function updateStats() {
+            document.getElementById('completedSessions').textContent = pomodoroState.completedSessions;
+            document.getElementById('totalTime').textContent = pomodoroState.totalFocusTime;
+            document.getElementById('streakCount').textContent = pomodoroState.streakCount;
+        }
+
+        function addSessionToHistory(sessionType, time) {
+            const session = {
+                type: sessionType,
+                completedAt: time,
+                duration: sessionType === 'work' ? 25 : (sessionType === 'shortBreak' ? 5 : 15)
+            };
+            
+            pomodoroState.sessions.unshift(session);
+            if (pomodoroState.sessions.length > 20) {
+                pomodoroState.sessions = pomodoroState.sessions.slice(0, 20);
+            }
+            
+            saveSessionHistory();
+            loadSessionHistory();
+        }
+
+        function loadSessionHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (pomodoroState.sessions.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; opacity: 0.7; padding: 1rem;">아직 완료된 세션이 없습니다.</p>';
+                return;
+            }
+            
+            pomodoroState.sessions.forEach(session => {
+                const item = document.createElement('div');
+                item.className = `history-item-pomodoro ${session.type === 'work' ? 'work-session' : 'break-session'}`;
+                
+                const sessionLabels = {
+                    work: '🍅 작업 세션',
+                    shortBreak: '☕ 짧은 휴식',
+                    longBreak: '🌟 긴 휴식'
+                };
+                
+                item.innerHTML = `
+                    <div>
+                        <span class="session-type">${sessionLabels[session.type]}</span>
+                        <div class="session-time">${session.completedAt.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                    <div>${session.duration}분</div>
+                `;
+                
+                historyList.appendChild(item);
+            });
+        }
+
+        function saveSessionHistory() {
+            try {
+                localStorage.setItem('pomodoroSessions', JSON.stringify(pomodoroState.sessions));
+                localStorage.setItem('pomodoroStats', JSON.stringify({
+                    completedSessions: pomodoroState.completedSessions,
+                    totalFocusTime: pomodoroState.totalFocusTime,
+                    streakCount: pomodoroState.streakCount
+                }));
+            } catch (e) {
+                console.log('Could not save pomodoro data to localStorage');
+            }
+        }
+
+        function loadSavedData() {
+            try {
+                const savedSessions = localStorage.getItem('pomodoroSessions');
+                const savedStats = localStorage.getItem('pomodoroStats');
+                
+                if (savedSessions) {
+                    pomodoroState.sessions = JSON.parse(savedSessions).map(session => ({
+                        ...session,
+                        completedAt: new Date(session.completedAt)
+                    }));
+                }
+                
+                if (savedStats) {
+                    const stats = JSON.parse(savedStats);
+                    pomodoroState.completedSessions = stats.completedSessions || 0;
+                    pomodoroState.totalFocusTime = stats.totalFocusTime || 0;
+                    pomodoroState.streakCount = stats.streakCount || 0;
+                }
+            } catch (e) {
+                console.log('Could not load pomodoro data from localStorage');
+            }
+        }
+
+        function playNotificationSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function showSessionCompleteNotification(sessionType) {
+            const messages = {
+                work: '🎉 작업 세션 완료! 잠시 휴식하세요.',
+                shortBreak: '☕ 휴식 완료! 다시 집중할 시간입니다.',
+                longBreak: '🌟 긴 휴식 완료! 새로운 작업을 시작해보세요.'
+            };
+            
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('포모도로 타이머', {
+                    body: messages[sessionType],
+                    icon: '🍅'
+                });
+            } else {
+                alert(messages[sessionType]);
+            }
+        }
+
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
         
         // Enter 키로 게임 플레이
         document.addEventListener('DOMContentLoaded', function() {
@@ -708,6 +1242,7 @@
         setInterval(updateTime, 1000);
         setInterval(updateQuote, 10000);
         createParticles();
+        loadSavedData();
         
         document.addEventListener('mousemove', (e) => {
             const shapes = document.querySelectorAll('.shape');

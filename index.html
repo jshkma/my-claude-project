@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Claude Project ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            margin: 2rem;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: containerPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes containerPulse {
+            0%, 100% { box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2); }
+            50% { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.1); }
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2rem;
+            border-radius: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out both;
+        }
+        
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .feature-card:hover::before {
+            left: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 0.8rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.5);
+            background: linear-gradient(45deg, #ff5252, #e64a19);
+        }
+        
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        .quote {
+            margin-top: 2.5rem;
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 1.2rem;
+            font-weight: 300;
+            position: relative;
+            padding: 1rem;
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .quote:hover {
+            opacity: 1;
+            transform: translateX(5px);
+            border-left-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .time {
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 300;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .game-container {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        .game-container h2 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: #fff;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .game-input {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .game-input input {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+            text-align: center;
+            min-width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .game-input input:focus {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+        
+        .game-btn {
+            min-width: 100px;
+        }
+        
+        .game-feedback {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feedback-hot {
+            background: rgba(255, 87, 87, 0.2);
+            border: 2px solid rgba(255, 87, 87, 0.5);
+            color: #ff5757;
+        }
+        
+        .feedback-warm {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid rgba(255, 193, 7, 0.5);
+            color: #ffc107;
+        }
+        
+        .feedback-cold {
+            background: rgba(33, 150, 243, 0.2);
+            border: 2px solid rgba(33, 150, 243, 0.5);
+            color: #2196f3;
+        }
+        
+        .feedback-success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid rgba(76, 175, 80, 0.5);
+            color: #4caf50;
+            animation: successPulse 0.5s ease-in-out;
+        }
+        
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .game-history {
+            margin-top: 1.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        
+        .history-item {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .restart-btn {
+            margin-top: 1.5rem;
+            background: linear-gradient(45deg, #4caf50, #2e7d32);
+        }
+        
+        .restart-btn:hover {
+            background: linear-gradient(45deg, #66bb6a, #388e3c);
+        }
+        
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: floatShapes 20s linear infinite;
+        }
+        
+        .shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            top: 70%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+        
+        .shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            top: 30%;
+            right: 20%;
+            animation-delay: -10s;
+        }
+        
+        @keyframes floatShapes {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(30px) rotate(240deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="container">
+        <h1>🌟 My Claude Project</h1>
+        <p class="subtitle">Claude Code로 만든 멋진 웹사이트</p>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>빠른 개발</h3>
+                <p>Claude Code와 함께 빠르게 프로젝트를 만들어보세요</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3>창적 아이디어</h3>
+                <p>AI의 도움으로 새로운 아이디어를 실현하세요</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>아름다운 디자인</h3>
+                <p>시각적으로 매력적인 웹사이트를 만들어보세요</p>
+            </div>
+        </div>
+        
+        <button class="btn" onclick="showGreeting()">인사말 보기</button>
+        <button class="btn" onclick="changeTheme()">테마 변경</button>
+        <button class="btn" onclick="toggleGame()">🎮 게임 시작</button>
+        
+        <div class="game-container" id="gameContainer" style="display: none;">
+            <h2>🎯 숫자 맞추기 게임</h2>
+            <p>1부터 100 사이의 숫자를 생각했어요! 맞춰보세요!</p>
+            <div class="game-stats">
+                <span>시도 횟수: <span id="attempts">0</span></span>
+                <span>점수: <span id="score">100</span></span>
+            </div>
+            <div class="game-input">
+                <input type="number" id="guessInput" min="1" max="100" placeholder="숫자를 입력하세요">
+                <button class="btn game-btn" onclick="makeGuess()">추측!</button>
+            </div>
+            <div class="game-feedback" id="gameFeedback"></div>
+            <div class="game-history" id="gameHistory"></div>
+            <button class="btn restart-btn" onclick="restartGame()" style="display: none;" id="restartBtn">🔄 다시 시작</button>
+        </div>
+        
+        <div class="quote" id="quote">
+            "코딩은 창조의 예술이다 🎨"
+        </div>
+        
+        <div class="time" id="current-time"></div>
+    </div>
+
+    <script>
+        const quotes = [
+            "코딩은 창조의 예술이다 🎨",
+            "버그는 기능이 될 수 있다 🐛➡️✨",
+            "좋은 코드는 시를 읽는 것과 같다 📖",
+            "오늘도 멋진 코딩하세요! 💪",
+            "Claude Code와 함께라면 뭐든 가능해요! 🚀"
+        ];
+        
+        const greetings = ["안녕하세요!", "Hello!", "Bonjour!", "Hola!", "こんにちは!"];
+        
+        let gameState = {
+            isGameActive: false,
+            targetNumber: 0,
+            attempts: 0,
+            score: 100,
+            guessHistory: []
+        };
+        
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+        
+        function showGreeting() {
+            const greeting = getRandomItem(greetings);
+            alert(`${greeting} Claude Code에 오신 것을 환영합니다! 🎉`);
+        }
+        
+        function changeTheme() {
+            const body = document.body;
+            const currentGradient = body.style.background;
+            
+            const themes = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+            ];
+            
+            let newTheme;
+            do {
+                newTheme = getRandomItem(themes);
+            } while (newTheme === currentGradient);
+            
+            body.style.background = newTheme;
+        }
+        
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('ko-KR');
+            document.getElementById('current-time').textContent = `현재 시간: ${timeString}`;
+        }
+        
+        function updateQuote() {
+            const quote = getRandomItem(quotes);
+            document.getElementById('quote').textContent = quote;
+        }
+        
+        function toggleGame() {
+            const gameContainer = document.getElementById('gameContainer');
+            if (gameState.isGameActive) {
+                gameContainer.style.display = 'none';
+                gameState.isGameActive = false;
+                document.querySelector('button[onclick="toggleGame()"]').textContent = '🎮 게임 시작';
+            } else {
+                gameContainer.style.display = 'block';
+                startNewGame();
+                document.querySelector('button[onclick="toggleGame()"]').textContent = '🎮 게임 닫기';
+            }
+        }
+        
+        function startNewGame() {
+            gameState.isGameActive = true;
+            gameState.targetNumber = Math.floor(Math.random() * 100) + 1;
+            gameState.attempts = 0;
+            gameState.score = 100;
+            gameState.guessHistory = [];
+            
+            document.getElementById('attempts').textContent = '0';
+            document.getElementById('score').textContent = '100';
+            document.getElementById('gameFeedback').textContent = '';
+            document.getElementById('gameFeedback').className = 'game-feedback';
+            document.getElementById('gameHistory').innerHTML = '';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('restartBtn').style.display = 'none';
+            
+            console.log('Target number:', gameState.targetNumber); // 디버깅용
+        }
+        
+        function makeGuess() {
+            if (!gameState.isGameActive) return;
+            
+            const guessInput = document.getElementById('guessInput');
+            const guess = parseInt(guessInput.value);
+            
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                alert('1부터 100 사이의 숫자를 입력해주세요!');
+                return;
+            }
+            
+            gameState.attempts++;
+            gameState.score = Math.max(0, gameState.score - 5);
+            
+            document.getElementById('attempts').textContent = gameState.attempts;
+            document.getElementById('score').textContent = gameState.score;
+            
+            const feedback = document.getElementById('gameFeedback');
+            const history = document.getElementById('gameHistory');
+            
+            let feedbackText = '';
+            let feedbackClass = '';
+            
+            if (guess === gameState.targetNumber) {
+                feedbackText = `🎉 정답입니다! ${gameState.attempts}번 만에 맞추셨네요!`;
+                feedbackClass = 'feedback-success';
+                endGame(true);
+            } else {
+                const difference = Math.abs(guess - gameState.targetNumber);
+                gameState.guessHistory.push(guess);
+                
+                if (difference <= 5) {
+                    feedbackText = guess < gameState.targetNumber ? '🔥 아주 가까워요! 더 큰 수예요!' : '🔥 아주 가까워요! 더 작은 수예요!';
+                    feedbackClass = 'feedback-hot';
+                } else if (difference <= 15) {
+                    feedbackText = guess < gameState.targetNumber ? '🌡️ 가까워요! 더 큰 수예요!' : '🌡️ 가까워요! 더 작은 수예요!';
+                    feedbackClass = 'feedback-warm';
+                } else {
+                    feedbackText = guess < gameState.targetNumber ? '❄️ 멀어요! 더 큰 수예요!' : '❄️ 멀어요! 더 작은 수예요!';
+                    feedbackClass = 'feedback-cold';
+                }
+                
+                // 히스토리 추가
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.textContent = `${gameState.attempts}번째: ${guess} - ${feedbackText.split('!')[1]}`;
+                history.appendChild(historyItem);
+                history.scrollTop = history.scrollHeight;
+            }
+            
+            feedback.textContent = feedbackText;
+            feedback.className = `game-feedback ${feedbackClass}`;
+            guessInput.value = '';
+        }
+        
+        function endGame(won) {
+            gameState.isGameActive = false;
+            document.getElementById('guessInput').disabled = true;
+            document.getElementById('restartBtn').style.display = 'inline-block';
+            
+            if (won) {
+                const bonusPoints = Math.max(0, 50 - gameState.attempts * 2);
+                gameState.score += bonusPoints;
+                document.getElementById('score').textContent = gameState.score;
+                
+                setTimeout(() => {
+                    alert(`🏆 축하합니다! 최종 점수: ${gameState.score}점\n보너스 점수: ${bonusPoints}점`);
+                }, 500);
+            }
+        }
+        
+        function restartGame() {
+            startNewGame();
+        }
+        
+        // Enter 키로 게임 플레이
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('guessInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    makeGuess();
+                }
+            });
+        });
+        
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        function addClickEffect(event) {
+            const ripple = document.createElement('div');
+            const size = 60;
+            const rect = event.target.getBoundingClientRect();
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                left: ${x}px;
+                top: ${y}px;
+                pointer-events: none;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            event.target.style.position = 'relative';
+            event.target.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', addClickEffect);
+        });
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        setInterval(updateQuote, 10000);
+        createParticles();
+        
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.5;
+                const xOffset = (x - 0.5) * speed * 20;
+                const yOffset = (y - 0.5) * speed * 20;
+                
+                shape.style.transform = `translate(${xOffset}px, ${yOffset}px) rotate(${xOffset}deg)`;
+            });
+        });
+    </script>
+</body>
+</html>
